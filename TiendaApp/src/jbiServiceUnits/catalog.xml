@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:18080/Pagos/Pagos?WSDL" uri="../Tienda/ServicioPagos/localhost_18080/Pagos/Pagos.wsdl"/>
+    <system systemId="http://localhost:18080/Pagos/Pagos?xsd=1" uri="../Tienda/ServicioPagos/localhost_18080/Pagos/Pagos.xsd_1.xsd"/>
+    <system systemId="http://localhost:18080/Paqueteria/Paqueteria?WSDL" uri="../Tienda/ServicioPaqueteria/localhost_18080/Paqueteria/Paqueteria.wsdl"/>
+    <system systemId="http://localhost:18080/Paqueteria/Paqueteria?xsd=1" uri="../Tienda/ServicioPaqueteria/localhost_18080/Paqueteria/Paqueteria.xsd_1.xsd"/>
+    <system systemId="http://localhost:18080/Almacen/Almacen?WSDL" uri="../Tienda/ServicioAlmacen/localhost_18080/Almacen/Almacen.wsdl"/>
+    <system systemId="http://localhost:18080/Almacen/Almacen?xsd=1" uri="../Tienda/ServicioAlmacen/localhost_18080/Almacen/Almacen.xsd_1.xsd"/>
+</catalog>

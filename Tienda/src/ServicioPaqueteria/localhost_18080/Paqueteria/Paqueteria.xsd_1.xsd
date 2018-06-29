@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.2-b608 (trunk-7979; 2015-01-21T12:50:19+0000) JAXWS-RI/2.2.11-b150120.1832 JAXWS-API/2.2.12 JAXB-RI/2.2.12-b141219.1637 JAXB-API/2.2.13-b141020.1521 svn-revision#unknown. --><xs:schema xmlns:tns="http://Paqueteria/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://Paqueteria/">
+
+<xs:element name="enviar" type="tns:enviar"/>
+
+<xs:element name="enviarResponse" type="tns:enviarResponse"/>
+
+<xs:element name="obtenerFechaDeEntrega" type="tns:obtenerFechaDeEntrega"/>
+
+<xs:element name="obtenerFechaDeEntregaResponse" type="tns:obtenerFechaDeEntregaResponse"/>
+
+<xs:complexType name="obtenerFechaDeEntrega">
+<xs:sequence>
+<xs:element name="confirmacion" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="obtenerFechaDeEntregaResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="enviar">
+<xs:sequence>
+<xs:element name="cliente" type="xs:string" minOccurs="0"/>
+<xs:element name="producto" type="xs:string" minOccurs="0"/>
+<xs:element name="unidades" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="enviarResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

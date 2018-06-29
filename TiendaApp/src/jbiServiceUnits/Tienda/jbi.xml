@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jbi xmlns="http://java.sun.com/xml/ns/jbi" xmlns:ns0="http://enterprise.netbeans.org/bpel/Tienda/tienda" xmlns:ns1="http://Almacen/" xmlns:ns2="http://Pagos/" xmlns:ns3="http://Paqueteria/" xmlns:ns4="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" xmlns:ns5="http://www.sun.com/jbi/descriptor/service-unit" version="1.0">
+    <services binding-component="false">
+        <provides endpoint-name="TiendaPortTypeRole_myRole" interface-name="ns4:TiendaPortType" service-name="ns0:Venta">
+            <ns5:display-name>Venta</ns5:display-name>
+            <ns5:process-name>Venta</ns5:process-name>
+            <ns5:file-path>tienda.bpel</ns5:file-path>
+        </provides>
+        <consumes endpoint-name="AlmacenRole_partnerRole" interface-name="ns1:Almacen" service-name="ns0:Almacen">
+            <ns5:display-name>Almacen</ns5:display-name>
+            <ns5:process-name>Venta</ns5:process-name>
+            <ns5:file-path>tienda.bpel</ns5:file-path>
+        </consumes>
+        <consumes endpoint-name="PagosRole_partnerRole" interface-name="ns2:Pagos" service-name="ns0:Pagos">
+            <ns5:display-name>Pagos</ns5:display-name>
+            <ns5:process-name>Venta</ns5:process-name>
+            <ns5:file-path>tienda.bpel</ns5:file-path>
+        </consumes>
+        <consumes endpoint-name="PaqueteriaRole_partnerRole" interface-name="ns3:Paqueteria" service-name="ns0:Paqueteria">
+            <ns5:display-name>Paqueteria</ns5:display-name>
+            <ns5:process-name>Venta</ns5:process-name>
+            <ns5:file-path>tienda.bpel</ns5:file-path>
+        </consumes>
+    </services>
+</jbi>

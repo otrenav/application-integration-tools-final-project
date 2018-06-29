@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="Venta"
+    targetNamespace="http://enterprise.netbeans.org/bpel/Tienda/tienda"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/Tienda/tienda"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling">
+    <import namespace="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" location="DescriptorBPEL/Tienda.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/AlmacenWrapper" location="AlmacenWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://Almacen/" location="http://localhost:18080/Almacen/Almacen?WSDL" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/PagosWrapper" location="PagosWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://Pagos/" location="http://localhost:18080/Pagos/Pagos?WSDL" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/PaqueteriaWrapper" location="PaqueteriaWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://Paqueteria/" location="http://localhost:18080/Paqueteria/Paqueteria?WSDL" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="Almacen" xmlns:tns="http://enterprise.netbeans.org/bpel/AlmacenWrapper" partnerLinkType="tns:AlmacenLinkType" partnerRole="AlmacenRole"/>
+        <partnerLink name="Pagos" xmlns:tns="http://enterprise.netbeans.org/bpel/PagosWrapper" partnerLinkType="tns:PagosLinkType" partnerRole="PagosRole"/>
+        <partnerLink name="Paqueteria" xmlns:tns="http://enterprise.netbeans.org/bpel/PaqueteriaWrapper" partnerLinkType="tns:PaqueteriaLinkType" partnerRole="PaqueteriaRole"/>
+        <partnerLink name="Venta" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" partnerLinkType="tns:Tienda" myRole="TiendaPortTypeRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="ObtenerFechaDeEntregaOut" xmlns:tns="http://Paqueteria/" messageType="tns:obtenerFechaDeEntregaResponse"/>
+        <variable name="ObtenerFechaDeEntregaIn" xmlns:tns="http://Paqueteria/" messageType="tns:obtenerFechaDeEntrega"/>
+        <variable name="EnviarOut" xmlns:tns="http://Paqueteria/" messageType="tns:enviarResponse"/>
+        <variable name="EnviarIn" xmlns:tns="http://Paqueteria/" messageType="tns:enviar"/>
+        <variable name="CobrarOut" xmlns:tns="http://Pagos/" messageType="tns:cobrarResponse"/>
+        <variable name="CobrarIn" xmlns:tns="http://Pagos/" messageType="tns:cobrar"/>
+        <variable name="ObtenerClienteOut" xmlns:tns="http://Pagos/" messageType="tns:obtenerClienteResponse"/>
+        <variable name="ObtenerClienteIn" xmlns:tns="http://Pagos/" messageType="tns:obtenerCliente"/>
+        <variable name="ObtenerPrecioTotalOut" xmlns:tns="http://Almacen/" messageType="tns:obtenerPrecioTotalResponse"/>
+        <variable name="ObtenerPrecioTotalIn" xmlns:tns="http://Almacen/" messageType="tns:obtenerPrecioTotal"/>
+        <variable name="ObtenerUnidadesDisponiblesOut" xmlns:tns="http://Almacen/" messageType="tns:obtenerUnidadesDisponiblesResponse"/>
+        <variable name="ObtenerUnidadesDisponiblesIn" xmlns:tns="http://Almacen/" messageType="tns:obtenerUnidadesDisponibles"/>
+        <variable name="TiendaOperationOutErrorUnidades" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" messageType="tns:TiendaOperationResponse"/>
+        <variable name="TiendaOperationOutErrorCobro" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" messageType="tns:TiendaOperationResponse"/>
+        <variable name="TiendaOperationOutConfirmacion" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" messageType="tns:TiendaOperationResponse"/>
+        <variable name="TiendaOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" messageType="tns:TiendaOperationRequest"/>
+    </variables>
+    <sequence>
+        <receive name="Recepcion" createInstance="yes" partnerLink="Venta" operation="TiendaOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" portType="tns:TiendaPortType" variable="TiendaOperationIn"/>
+        <assign name="AsignarProducto">
+            <copy>
+                <from variable="TiendaOperationIn" part="producto"/>
+                <to>$ObtenerUnidadesDisponiblesIn.parameters/producto</to>
+            </copy>
+        </assign>
+        <invoke name="ObtenerUnidadesDisponibles" partnerLink="Almacen" operation="obtenerUnidadesDisponibles" xmlns:tns="http://Almacen/" portType="tns:Almacen" inputVariable="ObtenerUnidadesDisponiblesIn" outputVariable="ObtenerUnidadesDisponiblesOut"/>
+        <if name="Unidades">
+            <condition>$TiendaOperationIn.unidades &lt;= $ObtenerUnidadesDisponiblesOut.parameters/return</condition>
+            <sequence name="SiHayUnidades">
+                <assign name="AsignarProductoYUnidades">
+                    <copy>
+                        <from variable="TiendaOperationIn" part="producto"/>
+                        <to>$ObtenerPrecioTotalIn.parameters/producto</to>
+                    </copy>
+                    <copy>
+                        <from variable="TiendaOperationIn" part="unidades"/>
+                        <to>$ObtenerPrecioTotalIn.parameters/unidades</to>
+                    </copy>
+                </assign>
+                <invoke name="ObtenerPrecioTotal" partnerLink="Almacen" operation="obtenerPrecioTotal" xmlns:tns="http://Almacen/" portType="tns:Almacen" inputVariable="ObtenerPrecioTotalIn" outputVariable="ObtenerPrecioTotalOut"/>
+                <assign name="AsignarTarjeta">
+                    <copy>
+                        <from variable="TiendaOperationIn" part="tarjeta"/>
+                        <to>$ObtenerClienteIn.parameters/tarjeta</to>
+                    </copy>
+                </assign>
+                <invoke name="ObtenerCliente" partnerLink="Pagos" operation="obtenerCliente" xmlns:tns="http://Pagos/" portType="tns:Pagos" inputVariable="ObtenerClienteIn" outputVariable="ObtenerClienteOut"/>
+                <assign name="AsignarClienteYPrecioTotal">
+                    <copy>
+                        <from>$ObtenerClienteOut.parameters/return</from>
+                        <to>$CobrarIn.parameters/cliente</to>
+                    </copy>
+                    <copy>
+                        <from>$ObtenerPrecioTotalOut.parameters/return</from>
+                        <to>$CobrarIn.parameters/monto</to>
+                    </copy>
+                </assign>
+                <invoke name="Cobrar" partnerLink="Pagos" operation="cobrar" xmlns:tns="http://Pagos/" portType="tns:Pagos" inputVariable="CobrarIn" outputVariable="CobrarOut"/>
+                <if name="Cobro">
+                    <condition>$CobrarOut.parameters/return</condition>
+                    <sequence name="SeCobro">
+                        <assign name="AsignarClienteProductoYUnidades">
+                            <copy>
+                                <from>$ObtenerClienteOut.parameters/return</from>
+                                <to>$EnviarIn.parameters/cliente</to>
+                            </copy>
+                            <copy>
+                                <from variable="TiendaOperationIn" part="producto"/>
+                                <to>$EnviarIn.parameters/producto</to>
+                            </copy>
+                            <copy>
+                                <from variable="TiendaOperationIn" part="unidades"/>
+                                <to>$EnviarIn.parameters/unidades</to>
+                            </copy>
+                        </assign>
+                        <invoke name="EnviarYObtenerConfirmacion" partnerLink="Paqueteria" operation="enviar" xmlns:tns="http://Paqueteria/" portType="tns:Paqueteria" inputVariable="EnviarIn" outputVariable="EnviarOut"/>
+                        <assign name="AsignarConfirmacion">
+                            <copy>
+                                <from>$EnviarOut.parameters/return</from>
+                                <to>$ObtenerFechaDeEntregaIn.parameters/confirmacion</to>
+                            </copy>
+                        </assign>
+                        <invoke name="ObtenerFechaDeEntrega" partnerLink="Paqueteria" operation="obtenerFechaDeEntrega" xmlns:tns="http://Paqueteria/" portType="tns:Paqueteria" inputVariable="ObtenerFechaDeEntregaIn" outputVariable="ObtenerFechaDeEntregaOut"/>
+                        <assign name="AsignarOK">
+                            <copy>
+                                <from>concat('&lt;p&gt;¡Gracias! Esperamos que sea de tu agrado.&lt;/p&gt;', '&lt;table&gt;&lt;tr&gt;&lt;th&gt;Código de confirmación&lt;/th&gt;&lt;th&gt;Fecha de entrega&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;', $EnviarOut.parameters/return, '&lt;/td&gt;&lt;td&gt;', $ObtenerFechaDeEntregaOut.parameters/return, '&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;')</from>
+                                <to variable="TiendaOperationOutConfirmacion" part="resultado"/>
+                            </copy>
+                        </assign>
+                        <reply name="RespuestaOK" partnerLink="Venta" operation="TiendaOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" portType="tns:TiendaPortType" variable="TiendaOperationOutConfirmacion"/>
+                    </sequence>
+                    <else>
+                        <sequence name="NoSeCobro">
+                            <assign name="AsignarErrorCobro">
+                                <copy>
+                                    <from>'&lt;b&gt;No se pudo realizar el cobro.&lt;/b&gt; &lt;br&gt;&lt;br&gt;Posiblemente no tenga crédito suficiente.'</from>
+                                    <to variable="TiendaOperationOutErrorCobro" part="resultado"/>
+                                </copy>
+                            </assign>
+                            <reply name="RespuestaErrorCobro" partnerLink="Venta" operation="TiendaOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" portType="tns:TiendaPortType" variable="TiendaOperationOutErrorCobro"/>
+                        </sequence>
+                    </else>
+                </if>
+            </sequence>
+            <else>
+                <sequence name="NoHayUnidades">
+                    <assign name="AsignarErrorUnidades">
+                        <copy>
+                            <from>concat('No hay suficientes unidades.', '&lt;br&gt;&lt;br&gt;Sólo hay ', $ObtenerUnidadesDisponiblesOut.parameters/return, ' unidades.')</from>
+                            <to variable="TiendaOperationOutErrorUnidades" part="resultado"/>
+                        </copy>
+                    </assign>
+                    <reply name="RespuestaErrorUnidades" partnerLink="Venta" operation="TiendaOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/Tienda/DescriptorBPEL/Tienda" portType="tns:TiendaPortType" variable="TiendaOperationOutErrorUnidades"/>
+                </sequence>
+            </else>
+        </if>
+    </sequence>
+</process>
